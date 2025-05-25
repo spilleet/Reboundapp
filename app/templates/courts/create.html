@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <h2>경기장 등록</h2>
+            <form method="post" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+                <div class="mb-3">
+                    <label for="name" class="form-label">경기장 이름</label>
+                    {{ form.name(class="form-control") }}
+                </div>
+                <div class="mb-3">
+                    <label for="location" class="form-label">위치</label>
+                    {{ form.location(class="form-control") }}
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="operating_start_time" class="form-label">운영 시작 시간</label>
+                        {{ form.operating_start_time(class="form-control", type="time") }}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="operating_end_time" class="form-label">운영 종료 시간</label>
+                        {{ form.operating_end_time(class="form-control", type="time") }}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <h5>시설 정보</h5>
+                    <div class="form-check">
+                        {{ form.wheelchair_rental(class="form-check-input") }}
+                        <label class="form-check-label" for="wheelchair_rental">휠체어 대여</label>
+                    </div>
+                    <div class="form-check">
+                        {{ form.wheelchair_ramp(class="form-check-input") }}
+                        <label class="form-check-label" for="wheelchair_ramp">휠체어 경사로</label>
+                    </div>
+                    <div class="form-check">
+                        {{ form.elevator(class="form-check-input") }}
+                        <label class="form-check-label" for="elevator">엘리베이터</label>
+                    </div>
+                    <div class="form-check">
+                        {{ form.adjustable_basket(class="form-check-input") }}
+                        <label class="form-check-label" for="adjustable_basket">골대 높낮이 조절</label>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="image" class="form-label">경기장 사진</label>
+                    {{ form.image(class="form-control") }}
+                </div>
+                <button type="submit" class="btn btn-primary">등록하기</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

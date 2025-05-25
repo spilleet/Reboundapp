@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-5">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="display-4 fw-bold">경기장 목록</h1>
+                <a href="{{ url_for('courts.create_court') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-plus-circle me-2"></i>경기장 등록
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        {% for court in courts %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm hover-shadow">
+                {% if court.image_path %}
+                <img src="{{ url_for('static', filename='uploads/' + court.image_path) }}" 
+                     class="card-img-top object-fit-cover" 
+                     style="height: 200px;"
+                     alt="{{ court.name }}">
+                {% else %}
+                <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                    <i class="fas fa-basketball-ball fa-3x text-muted"></i>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h3 class="card-title h4 mb-3">{{ court.name }}</h3>
+                    <div class="card-text mb-3">
+                        <p class="mb-2">
+                            <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                            <strong>위치:</strong> {{ court.location }}
+                        </p>
+                        <p class="mb-2">
+                            <i class="fas fa-clock text-primary me-2"></i>
+                            <strong>운영시간:</strong> {{ court.operating_hours }}
+                        </p>
+                    </div>
+                    <div class="facilities mb-4">
+                        {% if court.wheelchair_rental %}
+                        <span class="badge bg-info text-white mb-1"><i class="fas fa-wheelchair me-1"></i>휠체어 대여</span>
+                        {% endif %}
+                        {% if court.wheelchair_ramp %}
+                        <span class="badge bg-success text-white mb-1"><i class="fas fa-angle-double-up me-1"></i>경사로</span>
+                        {% endif %}
+                        {% if court.elevator %}
+                        <span class="badge bg-warning text-dark mb-1"><i class="fas fa-elevator me-1"></i>엘리베이터</span>
+                        {% endif %}
+                        {% if court.adjustable_basket %}
+                        <span class="badge bg-primary text-white mb-1"><i class="fas fa-arrows-alt-v me-1"></i>높이조절</span>
+                        {% endif %}
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                        <a href="{{ url_for('courts.court_detail', id=court.id) }}" 
+                           class="btn btn-info btn-lg flex-grow-1 me-2">
+                            상세 정보
+                        </a>
+                        {% if current_user.is_authenticated and court.created_by == current_user.id %}
+                        <form action="{{ url_for('courts.delete_court', id=court.id) }}" method="POST" class="d-inline">
+                            <button type="submit" 
+                                    class="btn btn-danger btn-lg" 
+                                    onclick="return confirm('이 경기장을 삭제하면 관련된 모든 경기도 삭제됩니다. 계속하시겠습니까?');">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+.hover-shadow {
+    transition: all 0.3s ease;
+}
+.hover-shadow:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+}
+.card {
+    border-radius: 15px;
+    overflow: hidden;
+}
+.btn {
+    border-radius: 10px;
+}
+.badge {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+    border-radius: 8px;
+}
+</style>
+{% endblock %} 

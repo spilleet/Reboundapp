@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h1 class="h4 mb-0">경기 등록</h1>
+            </div>
+            <div class="card-body">
+                <form action="" method="post" novalidate>
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ form.court_id.label(class="form-label") }}
+                        {{ form.court_id(class="form-select") }}
+                        {% for error in form.court_id.errors %}
+                        <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.date.label(class="form-label") }}
+                        {{ form.date(class="form-control", type="date") }}
+                        {% for error in form.date.errors %}
+                        <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.start_time.label(class="form-label") }}
+                        {{ form.start_time(class="form-control", type="time") }}
+                        {% for error in form.start_time.errors %}
+                        <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.end_time.label(class="form-label") }}
+                        {{ form.end_time(class="form-control", type="time") }}
+                        {% for error in form.end_time.errors %}
+                        <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.max_players.label(class="form-label") }}
+                        {{ form.max_players(class="form-control", type="number") }}
+                        {% for error in form.max_players.errors %}
+                        <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.difficulty.label(class="form-label") }}
+                        {{ form.difficulty(class="form-select") }}
+                        {% for error in form.difficulty.errors %}
+                        <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="d-grid">
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

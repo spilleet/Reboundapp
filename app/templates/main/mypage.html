@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-12 mb-4">
+            <div class="card shadow-lg rounded-lg hover-card">
+                <div class="card-header bg-primary text-white py-3">
+                    <h2 class="h4 mb-0">
+                        <i class="fas fa-flag me-2"></i>
+                        내가 만든 경기
+                    </h2>
+                </div>
+                <div class="card-body p-4">
+                    {% if created_games %}
+                    <div class="row g-4">
+                        {% for game in created_games %}
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100 shadow-sm hover-card">
+                                <div class="card-body p-4">
+                                    <h5 class="card-title mb-4">
+                                        <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                                        {{ game.court.name }}
+                                    </h5>
+                                    <div class="game-info">
+                                        <div class="info-row py-2">
+                                            <i class="far fa-calendar text-primary"></i>
+                                            <span class="ms-3">{{ game.date.strftime('%Y-%m-%d') }}</span>
+                                        </div>
+                                        <div class="info-row py-2">
+                                            <i class="far fa-clock text-primary"></i>
+                                            <span class="ms-3">{{ game.start_time.strftime('%H:%M') }} - {{ game.end_time.strftime('%H:%M') }}</span>
+                                        </div>
+                                        <div class="info-row py-2">
+                                            <i class="fas fa-signal text-primary"></i>
+                                            <span class="ms-3">
+                                                {% if game.difficulty == 'beginner' %}
+                                                    초급
+                                                {% elif game.difficulty == 'intermediate' %}
+                                                    중급
+                                                {% else %}
+                                                    고급
+                                                {% endif %}
+                                            </span>
+                                        </div>
+                                        <div class="info-row py-2">
+                                            <i class="fas fa-users text-primary"></i>
+                                            <span class="ms-3">참가자 {{ game.participants.count() }}/{{ game.max_players }}명</span>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4">
+                                        <a href="{{ url_for('games.game_detail', id=game.id) }}" 
+                                           class="btn btn-primary rounded-pill w-100">
+                                            <i class="fas fa-info-circle me-2"></i>상세 정보
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <p class="text-muted mb-4">아직 만든 경기가 없습니다.</p>
+                        <a href="{{ url_for('games.create_game') }}" 
+                           class="btn btn-primary rounded-pill px-4">
+                            <i class="fas fa-plus me-2"></i>경기 만들기
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="card shadow-lg rounded-lg hover-card">
+                <div class="card-header bg-primary text-white py-3">
+                    <h2 class="h4 mb-0">
+                        <i class="fas fa-user-check me-2"></i>
+                        참가 신청한 경기
+                    </h2>
+                </div>
+                <div class="card-body p-4">
+                    {% if participated_games %}
+                    <div class="row g-4">
+                        {% for participant in participated_games %}
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100 shadow-sm hover-card">
+                                <div class="card-body p-4">
+                                    <h5 class="card-title mb-4">
+                                        <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                                        {{ participant.game.court.name }}
+                                    </h5>
+                                    <div class="game-info">
+                                        <div class="info-row py-2">
+                                            <i class="far fa-calendar text-primary"></i>
+                                            <span class="ms-3">{{ participant.game.date.strftime('%Y-%m-%d') }}</span>
+                                        </div>
+                                        <div class="info-row py-2">
+                                            <i class="far fa-clock text-primary"></i>
+                                            <span class="ms-3">{{ participant.game.start_time.strftime('%H:%M') }} - {{ participant.game.end_time.strftime('%H:%M') }}</span>
+                                        </div>
+                                        <div class="info-row py-2">
+                                            <i class="fas fa-signal text-primary"></i>
+                                            <span class="ms-3">
+                                                {% if participant.game.difficulty == 'beginner' %}
+                                                    초급
+                                                {% elif participant.game.difficulty == 'intermediate' %}
+                                                    중급
+                                                {% else %}
+                                                    고급
+                                                {% endif %}
+                                            </span>
+                                        </div>
+                                        <div class="info-row py-2">
+                                            <i class="fas fa-users text-primary"></i>
+                                            <span class="ms-3">참가자 {{ participant.game.participants.count() }}/{{ participant.game.max_players }}명</span>
+                                        </div>
+                                        <div class="info-row py-2">
+                                            <i class="fas fa-clock text-primary"></i>
+                                            <span class="ms-3">신청일: {{ participant.joined_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4">
+                                        <a href="{{ url_for('games.game_detail', id=participant.game.id) }}" 
+                                           class="btn btn-primary rounded-pill w-100">
+                                            <i class="fas fa-info-circle me-2"></i>상세 정보
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <p class="text-muted mb-4">아직 참가 신청한 경기가 없습니다.</p>
+                        <a href="{{ url_for('main.index') }}" 
+                           class="btn btn-primary rounded-pill px-4">
+                            <i class="fas fa-search me-2"></i>경기 찾아보기
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.hover-card {
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+
+.info-row {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.info-row:hover {
+    background-color: #f8f9fa;
+    transform: translateX(5px);
+}
+
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.card-header {
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+.card {
+    border-radius: 15px;
+}
+</style>
+{% endblock %} 

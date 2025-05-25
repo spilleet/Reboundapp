@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-5">
+        <div class="col-12">
+            <h1 class="display-4 mb-4 text-center">
+                <i class="fas fa-basketball-ball text-primary me-3"></i>
+                등록된 경기
+            </h1>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        {% for game in games %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm hover-card">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="icon-circle bg-primary text-white rounded-circle p-3">
+                            <i class="fas fa-basketball-ball"></i>
+                        </div>
+                        <h2 class="h4 mb-0 ms-3">{{ game.court.name }}</h2>
+                    </div>
+
+                    <div class="game-info mb-4">
+                        <div class="info-row d-flex align-items-center justify-content-between py-2">
+                            <div class="d-flex align-items-center">
+                                <i class="far fa-calendar text-primary"></i>
+                                <span class="label ms-2">날짜</span>
+                            </div>
+                            <span class="value">{{ game.date.strftime('%Y-%m-%d') }}</span>
+                        </div>
+                        <div class="info-row d-flex align-items-center justify-content-between py-2">
+                            <div class="d-flex align-items-center">
+                                <i class="far fa-clock text-primary"></i>
+                                <span class="label ms-2">시간</span>
+                            </div>
+                            <span class="value">{{ game.start_time.strftime('%H:%M') }} - {{ game.end_time.strftime('%H:%M') }}</span>
+                        </div>
+                        <div class="info-row d-flex align-items-center justify-content-between py-2">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-signal text-primary"></i>
+                                <span class="label ms-2">난이도</span>
+                            </div>
+                            <span class="value">
+                                {% if game.difficulty == 'beginner' %}
+                                    초급
+                                {% elif game.difficulty == 'intermediate' %}
+                                    중급
+                                {% else %}
+                                    고급
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="info-row d-flex align-items-center justify-content-between py-2">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-users text-primary"></i>
+                                <span class="label ms-2">참가자</span>
+                            </div>
+                            <span class="value">{{ game.participants.count() }}/{{ game.max_players }}명</span>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('games.game_detail', id=game.id) }}" 
+                           class="btn btn-primary rounded-pill">
+                            <i class="fas fa-info-circle me-2"></i>상세 정보
+                        </a>
+                        {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('main.join_game', game_id=game.id) }}" 
+                           class="btn btn-outline-primary rounded-pill">
+                            <i class="fas fa-user-plus me-2"></i>참가 신청
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12">
+            <div class="alert alert-info text-center rounded-3">
+                <i class="fas fa-info-circle me-2"></i>
+                현재 등록된 경기가 없습니다.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-12">
+            <h2 class="display-5 mb-4 text-center">
+                <i class="fas fa-map-marker-alt text-primary me-3"></i>
+                등록된 경기장
+            </h2>
+        </div>
+        {% for court in courts %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                {% if court.image_path %}
+                <img src="{{ url_for('static', filename='uploads/' + court.image_path) }}" 
+                     class="card-img-top" 
+                     alt="{{ court.name }}"
+                     style="height: 200px; object-fit: cover;">
+                {% endif %}
+                <div class="card-body p-4">
+                    <h3 class="card-title h5 mb-3">{{ court.name }}</h3>
+                    <div class="info-item py-2">
+                        <i class="fas fa-map-marker-alt text-primary"></i>
+                        <span class="ms-3">{{ court.location }}</span>
+                    </div>
+                    <div class="info-item py-2">
+                        <i class="fas fa-clock text-primary"></i>
+                        <span class="ms-3">{{ court.operating_start_time.strftime('%H:%M') }} - {{ court.operating_end_time.strftime('%H:%M') }}</span>
+                    </div>
+                    
+                    <div class="facility-icons mt-3">
+                        {% if court.wheelchair_rental %}
+                        <span class="badge bg-primary mb-1 me-1">휠체어 대여</span>
+                        {% endif %}
+                        {% if court.wheelchair_ramp %}
+                        <span class="badge bg-success mb-1 me-1">경사로</span>
+                        {% endif %}
+                        {% if court.elevator %}
+                        <span class="badge bg-info mb-1 me-1">엘리베이터</span>
+                        {% endif %}
+                        {% if court.adjustable_basket %}
+                        <span class="badge bg-warning mb-1">높이조절</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mt-4">
+                        <a href="{{ url_for('courts.court_detail', id=court.id) }}" 
+                           class="btn btn-primary w-100">
+                            상세 정보
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+.hover-card {
+    transition: all 0.3s ease;
+    border: none;
+    border-radius: 15px;
+}
+
+.hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+
+.icon-circle {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: var(--bs-primary);
+    transition: all 0.3s ease;
+}
+
+.info-row {
+    padding: 12px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    background-color: #f8f9fa;
+    margin-bottom: 8px;
+}
+
+.info-row:hover {
+    background-color: #e9ecef;
+    transform: translateX(5px);
+}
+
+.info-row .label {
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.info-row .value {
+    font-weight: 600;
+    color: #212529;
+}
+
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+</style>
+{% endblock %} 
